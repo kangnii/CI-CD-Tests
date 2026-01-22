@@ -17,6 +17,6 @@ jobs:
         run: npm install
       - name: Check syntax
         run: npm run lint
-      - name: Check tests
+      - name: verification tests
         run: npm run test
     
