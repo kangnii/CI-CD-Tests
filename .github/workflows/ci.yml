@@ -26,7 +26,4 @@ jobs:
       - uses: JorgeLNJunior/render-deploy@v1.4.7
         with:
           service_id: srv-d5pi8e6r433s73dbu7ng
-          api_key: rnd_8NabHTMIqUtO1TxVwXBP1SOWELwV
-          github_deployment: 'true'
-          github_token: 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
-        
+          api_key: rnd_8NabHTMIqUtO1TxVwXBP1SOWELwV        
