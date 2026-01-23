@@ -30,4 +30,4 @@ jobs:
       - uses: JorgeLNJunior/render-deploy@v1.4.7
         with:
           service_id: ${{ secrets.SERVICE_ID }}
-          api_key: ${{ secrets.API_KEY }}        
+          api_key: ${{ secrets.API_KEY }}       
