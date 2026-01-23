@@ -25,5 +25,5 @@ jobs:
     steps:
       - uses: JorgeLNJunior/render-deploy@v1.4.7
         with:
-          service_id: srv-d5pi8e6r433s73dbu7ng
-          api_key: rnd_8NabHTMIqUtO1TxVwXBP1SOWELwV        
+          service_id: ${{ secrets.SERVICE_ID }} # Ensure this secret is added in repository settings
+          api_key: ${{ secrets.API_KEY }}
