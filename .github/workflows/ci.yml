@@ -30,4 +30,31 @@ jobs:
       - uses: JorgeLNJunior/render-deploy@v1.4.7
         with:
           service_id: ${{ secrets.SERVICE_ID }}
-          api_key: ${{ secrets.API_KEY }}       
+          api_key: ${{ secrets.API_KEY }}   
+          # ✅ Succès
+      - name: Notify Discord (success)
+        if: success()
+        run: |
+          curl -H "Content-Type: application/json" \
+          -d '{
+            "embeds": [{
+              "title": "✅ Déploiement réussi",
+              "description": "Le service a été déployé sur Render",
+              "color": 3066993
+            }]
+          }' \
+          ${{ secrets.DISCORD_WEBHOOK }}
+
+      # ❌ Échec
+      - name: Notify Discord (failure)
+        if: failure()
+        run: |
+          curl -H "Content-Type: application/json" \
+          -d '{
+            "embeds": [{
+              "title": "❌ Déploiement échoué",
+              "description": "Le pipeline GitHub Actions a échoué",
+              "color": 15158332
+            }]
+          }' \
+          ${{ secrets.DISCORD_WEBHOOK }}    
