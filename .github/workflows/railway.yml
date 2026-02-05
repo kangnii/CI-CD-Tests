@@ -31,7 +31,6 @@ jobs:
       - uses: devtomio/action-railway@v1.1.4
         with:
           railway_token: ${{ secrets.RAILWAY_API_KEY }}
-          railway_service: ${{ secrets.RAILWAY_SERVICE_ID }}
       # ✅ Succès
       - name: Notify Discord (success)
         if: success()
