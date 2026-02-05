@@ -43,4 +43,18 @@ jobs:
               "color": 3066993
             }]
           }' \
+          ${{ secrets.DISCORD_WEBHOOK }}
+
+      # ❌ Échec
+      - name: Notify Discord (failure)
+        if: failure()
+        run: |
+          curl -H "Content-Type: application/json" \
+          -d '{
+            "embeds": [{
+              "title": "❌ Déploiement échoué",
+              "description": "Le pipeline GitHub Actions a échoué",
+              "color": 15158332
+            }]
+          }' \
           ${{ secrets.DISCORD_WEBHOOK }}  
