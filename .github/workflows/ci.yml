@@ -31,17 +31,12 @@ jobs:
       - name: Notify Discord (build failure)
         if: failure()
         run: |
-          if [ -z "${{ secrets.DISCORD_WEBHOOK_URL_CI }}" ]; then
-            echo "Le secret DISCORD_WEBHOOK_URL_CI est vide ou absent."
-            exit 1
-          fi
-
           PAYLOAD='{
             "embeds": [{
               "title": "Build echoue (SCA/CI)",
               "description": "Le job build a echoué avant le deploiement.",
-              'author': {
-                "name": "Wisdom Follygan",
+              "author": {
+                "name": "Wisdom Follygan"
               },
               "color": 15158332
             }]
@@ -66,11 +61,6 @@ jobs:
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL_CI }}
         run: |
-          if [ -z "$DISCORD_WEBHOOK_URL" ]; then
-            echo "Le secret DISCORD_WEBHOOK_URL est vide ou absent."
-            exit 1
-          fi
-
           if [ "${{ job.status }}" = "success" ]; then
             PAYLOAD='{
               "embeds": [{
