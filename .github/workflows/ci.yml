@@ -28,6 +28,26 @@ jobs:
       - name: SCA - Audit des dépendances
         run: npm audit --audit-level=high
 
+      - name: Notify Discord (build failure)
+        if: failure()
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL_CI }}
+        run: |
+          if [ -z "$DISCORD_WEBHOOK_URL_CI" ]; then
+            echo "Le secret DISCORD_WEBHOOK_URL_CI est vide ou absent."
+            exit 1
+          fi
+
+          PAYLOAD='{
+            "embeds": [{
+              "title": "Build echoue (SCA/CI)",
+              "description": "Le job build a echoué avant le deploiement.",
+              "color": 15158332
+            }]
+          }'
+
+          curl -sS -f -H "Content-Type: application/json" -d "$PAYLOAD" "$DISCORD_WEBHOOK_URL_CI"
+
   deploy:
     needs: build
     if: startsWith(github.ref, 'refs/tags/')
@@ -43,7 +63,7 @@ jobs:
       - name: Notify Discord
         if: always()
         env:
-          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL_CI }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK}}
         run: |
           if [ -z "$DISCORD_WEBHOOK_URL" ]; then
             echo "Le secret DISCORD_WEBHOOK_URL_CI est vide ou absent."
@@ -62,13 +82,13 @@ jobs:
             PAYLOAD='{
               "embeds": [{
                 "title": "Deploiement echoue",
-                "description": "Le pipeline GitHub Actions a echoué",
+                "description": "Le pipeline GitHub Actions a echoue",
                 "color": 15158332
               }]
             }'
           fi
 
-          curl -sS -f -H "Content-Type: application/json" -d "$PAYLOAD" "$DISCORD_WEBHOOK_URL_CI"
+          curl -sS -f -H "Content-Type: application/json" -d "$PAYLOAD" "$DISCORD_WEBHOOK"
 
               
           
