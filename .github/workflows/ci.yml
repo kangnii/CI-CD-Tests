@@ -33,37 +33,42 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     steps:
-      - uses: JorgeLNJunior/render-deploy@v1.4.7
+      - name: Deploy to Render
+        id: render_deploy
+        uses: JorgeLNJunior/render-deploy@v1.4.7
         with:
           service_id: ${{ secrets.SERVICE_ID }}
-          api_key: ${{ secrets.API_KEY }}   
-          # ✅ Succès
-      - name: Notify Discord (success)
-        if: success()
-        run: |
-          curl -H "Content-Type: application/json" \
-          -d '{
-            "embeds": [{
-              "title": "✅ Déploiement réussi",
-              "description": "Le service a été déployé sur Render",
-              "color": 3066993
-            }]
-          }' \
-          ${{ secrets.DISCORD_WEBHOOK_URL_CI }}
+          api_key: ${{ secrets.API_KEY }}
 
-      # ❌ Échec
-      - name: Notify Discord (failure)
-        if: failure()
+      - name: Notify Discord
+        if: always()
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL_CI }}
         run: |
-          curl -H "Content-Type: application/json" \
-          -d '{
-            "embeds": [{
-              "title": "❌ Déploiement échoué",
-              "description": "Le pipeline GitHub Actions a échoué",
-              "color": 15158332
-            }]
-          }' \
-          ${{ secrets.DISCORD_WEBHOOK_URL_CI }}
+          if [ -z "$DISCORD_WEBHOOK_URL" ]; then
+            echo "Le secret DISCORD_WEBHOOK_URL_CI est vide ou absent."
+            exit 1
+          fi
+
+          if [ "${{ job.status }}" = "success" ]; then
+            PAYLOAD='{
+              "embeds": [{
+                "title": "Deploiement reussi",
+                "description": "Le service a ete deploye sur Render",
+                "color": 3066993
+              }]
+            }'
+          else
+            PAYLOAD='{
+              "embeds": [{
+                "title": "Deploiement echoue",
+                "description": "Le pipeline GitHub Actions a echoué",
+                "color": 15158332
+              }]
+            }'
+          fi
+
+          curl -sS -f -H "Content-Type: application/json" -d "$PAYLOAD" "$DISCORD_WEBHOOK_URL_CI"
 
               
           
