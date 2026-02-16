@@ -30,10 +30,8 @@ jobs:
 
       - name: Notify Discord (build failure)
         if: failure()
-        env:
-          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL_CI }}
         run: |
-          if [ -z "$DISCORD_WEBHOOK_URL" ]; then
+          if [ -z "${{ secrets.DISCORD_WEBHOOK_URL_CI }}" ]; then
             echo "Le secret DISCORD_WEBHOOK_URL_CI est vide ou absent."
             exit 1
           fi
@@ -49,7 +47,7 @@ jobs:
             }]
           }'
 
-          curl -sS -f -H "Content-Type: application/json" -d "$PAYLOAD" "$DISCORD_WEBHOOK_URL"
+          curl -sS -f -H "Content-Type: application/json" -d "$PAYLOAD" "${{ secrets.DISCORD_WEBHOOK_URL_CI }}"
 
   deploy:
     needs: build
