@@ -21,12 +21,18 @@ jobs:
         run: npm run lint
       - name: verification tests
         run: npm run test
+      - name: SCA - Audit des dépendances
+        run: npm audit --audit-level=high
 
   deploy:
     needs: build
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     steps:
+      - name: SAST - Scan du code source (Semgrep)
+        uses: semgrep/semgrep-action@v1
+        with:
+          config: p/javascript
       - uses: JorgeLNJunior/render-deploy@v1.4.7
         with:
           service_id: ${{ secrets.SERVICE_ID }}
@@ -43,7 +49,7 @@ jobs:
               "color": 3066993
             }]
           }' \
-          ${{ secrets.DISCORD_WEBHOOK }}
+          ${{ secrets.DISCORD_WEBHOOK_URL_CI }}
 
       # ❌ Échec
       - name: Notify Discord (failure)
@@ -57,7 +63,7 @@ jobs:
               "color": 15158332
             }]
           }' \
-          ${{ secrets.DISCORD_WEBHOOK }}    
+          ${{ secrets.DISCORD_WEBHOOK_URL_CI }}
 
               
           
