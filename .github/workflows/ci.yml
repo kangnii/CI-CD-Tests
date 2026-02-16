@@ -33,7 +33,7 @@ jobs:
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL_CI }}
         run: |
-          if [ -z "$DISCORD_WEBHOOK_URL_CI" ]; then
+          if [ -z "$DISCORD_WEBHOOK_URL" ]; then
             echo "Le secret DISCORD_WEBHOOK_URL_CI est vide ou absent."
             exit 1
           fi
@@ -46,7 +46,7 @@ jobs:
             }]
           }'
 
-          curl -sS -f -H "Content-Type: application/json" -d "$PAYLOAD" "$DISCORD_WEBHOOK_URL_CI"
+          curl -sS -f -H "Content-Type: application/json" -d "$PAYLOAD" "$DISCORD_WEBHOOK_URL"
 
   deploy:
     needs: build
@@ -63,7 +63,7 @@ jobs:
       - name: Notify Discord
         if: always()
         env:
-          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK}}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL_CI }}
         run: |
           if [ -z "$DISCORD_WEBHOOK_URL" ]; then
             echo "Le secret DISCORD_WEBHOOK_URL_CI est vide ou absent."
@@ -88,7 +88,7 @@ jobs:
             }'
           fi
 
-          curl -sS -f -H "Content-Type: application/json" -d "$PAYLOAD" "$DISCORD_WEBHOOK"
+          curl -sS -f -H "Content-Type: application/json" -d "$PAYLOAD" "$DISCORD_WEBHOOK_URL"
 
               
           
