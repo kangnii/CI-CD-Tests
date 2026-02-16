@@ -17,6 +17,10 @@ jobs:
           node-version: '18'
       - name: Install dependencies
         run: npm ci
+      - name: SAST - Scan du code source (Semgrep)
+        uses: semgrep/semgrep-action@v1
+        with:
+          config: p/javascript
       - name: Check syntax
         run: npm run lint
       - name: verification tests
@@ -29,10 +33,6 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     steps:
-      - name: SAST - Scan du code source (Semgrep)
-        uses: semgrep/semgrep-action@v1
-        with:
-          config: p/javascript
       - uses: JorgeLNJunior/render-deploy@v1.4.7
         with:
           service_id: ${{ secrets.SERVICE_ID }}
